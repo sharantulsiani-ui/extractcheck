@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "extractcheck"
+version = "0.1.0"
+description = "An offline benchmark for testing document extraction across PDF, PowerPoint and Excel, with exact source provenance"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Sharan Tulsiani"}]
+license = "Apache-2.0"
+keywords = ["document parsing", "document extraction", "document AI", "RAG", "PDF", "PPTX", "XLSX", "benchmark", "provenance", "offline AI"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Text Processing :: General",
+]
+dependencies = []
+
+[project.scripts]
+extractcheck = "extractcheck.cli:main"
+
+[project.urls]
+Repository = "https://github.com/sharantulsiani-ui/extractcheck"
+Issues = "https://github.com/sharantulsiani-ui/extractcheck/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Unit tests
+        run: PYTHONPATH=src python -m unittest discover -s tests -v
+      - name: Synthetic proof
+        run: PYTHONPATH=src python -m extractcheck.cli synthetic --output /tmp/extractcheck-example
+      - name: Public candidate audit
+        run: PYTHONPATH=src python tools/audit_release.py --release
+      - name: Compile
+        run: python -m compileall -q src tests tools
