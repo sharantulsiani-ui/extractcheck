@@ -2,12 +2,11 @@
 
 ## Release decision
 
-The local ExtractCheck candidate is ready for human review as a standalone,
-synthetic-only Apache-2.0 repository. Publication remains on hold until a
-GitHub repository exists, private vulnerability reporting is enabled, remote
-CI runs, and Sharan gives final approval.
+The synthetic-only Apache-2.0 repository is public. The local release gate
+passed before publication, private vulnerability reporting is enabled, and
+this revision repairs the first remote CI failure.
 
-No remote CI pass is claimed here.
+No green remote CI result is claimed until this exact revision passes.
 
 ## Decisions
 
@@ -62,6 +61,10 @@ corpus-derived hashes.
 - Synthetic Office ZIP members use fixed timestamps and permissions so report
   bytes remain deterministic.
 - OOXML census limits and traversal checks have regression coverage.
+- The first remote CI run passed its tests and synthetic proof but audited the
+  Git checkout itself. The fail-closed audit correctly rejected `.git`. CI now
+  audits a clean `git archive` of the exact commit, so the audit remains strict
+  and evaluates only files distributed by the repository.
 
 ## Known limitations
 
@@ -70,5 +73,5 @@ corpus-derived hashes.
 - The PDF implementation counts page objects. It is not a layout or text
   parser.
 - Synthetic proof does not establish parser quality on another corpus.
-- Remote CI, fresh clone verification and GitHub vulnerability reporting are
-  publication steps, not local evidence.
+- Remote CI and fresh-clone checks remain external evidence. Their current
+  status belongs in GitHub Actions, not in a timeless local claim.

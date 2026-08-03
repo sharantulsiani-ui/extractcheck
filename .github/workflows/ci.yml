@@ -14,8 +14,8 @@ jobs:
         python-version: ["3.11", "3.12", "3.13"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Unit tests
@@ -23,6 +23,14 @@ jobs:
       - name: Synthetic proof
         run: PYTHONPATH=src python -m extractcheck.cli synthetic --output /tmp/extractcheck-example
       - name: Public candidate audit
-        run: PYTHONPATH=src python tools/audit_release.py --release
+        shell: bash
+        run: |
+          audit_root="$RUNNER_TEMP/extractcheck-release"
+          audit_tar="$RUNNER_TEMP/extractcheck-release.tar"
+          mkdir -p "$audit_root"
+          git archive --format=tar --output="$audit_tar" HEAD
+          tar -xf "$audit_tar" -C "$audit_root"
+          PYTHONPATH="$audit_root/src" python "$audit_root/tools/audit_release.py" \
+            --release --root "$audit_root"
       - name: Compile
         run: python -m compileall -q src tests tools
