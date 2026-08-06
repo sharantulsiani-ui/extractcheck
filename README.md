@@ -1,5 +1,9 @@
 # ExtractCheck
 
+[![ci](https://github.com/sharantulsiani-ui/extractcheck/actions/workflows/ci.yml/badge.svg)](https://github.com/sharantulsiani-ui/extractcheck/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
+
 > Know what your document extractor missed before you trust your RAG.
 
 ExtractCheck is an offline benchmark for testing document extraction across
