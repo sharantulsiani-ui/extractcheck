@@ -29,4 +29,4 @@ Run third-party parsers in a separately supervised process.
 Do not attach private documents, extracted text, source paths, email metadata,
 or runtime evidence to a public issue. Use GitHub's private vulnerability
 reporting with a minimal synthetic reproducer. Private reporting must be enabled
-before publication.
+before publication. Private reporting is enabled for this repository.

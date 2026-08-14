@@ -1,0 +1,45 @@
+name: Adapter result
+description: Share a synthetic adapter result or a bounded comparison problem
+title: "[Adapter] "
+labels: ["adapter"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report what the evidence shows. Do not claim a universal parser winner from one fixture or corpus.
+  - type: input
+    id: adapter
+    attributes:
+      label: Adapter and version
+    validations:
+      required: true
+  - type: dropdown
+    id: format
+    attributes:
+      label: Format
+      options: [XLSX, PPTX, PDF, DOCX, Mixed]
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Result
+      description: Name the recovered and missing structures, locators and failure states.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Synthetic reproduction
+      description: Link to public synthetic evidence or give commands that create it.
+    validations:
+      required: true
+  - type: checkboxes
+    id: limits
+    attributes:
+      label: Claim check
+      options:
+        - label: I have stated what this result does not prove.
+          required: true
+        - label: This report contains no private source material or private-derived evidence.
+          required: true

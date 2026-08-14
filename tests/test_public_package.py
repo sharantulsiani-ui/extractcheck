@@ -6,13 +6,16 @@ from pathlib import Path
 import socket
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 
 from extractcheck.census import census_file
+from extractcheck.compare import build_reference_comparison
 from extractcheck.contracts import ContractError, validate_unit
 from extractcheck.evaluate import PRIVATE_SENTINELS, build_synthetic_report
 from extractcheck.fixtures import build_all
 from extractcheck.resources import ResourceSample
+from extractcheck.reference_adapter import extract_reference
 from extractcheck.runner import RunBudget, RunController, WorkerResult
 from extractcheck.safety import SafetyViolation, deny_python_network
 from tools.audit_release import audit
@@ -77,6 +80,44 @@ class PublicPackageTests(unittest.TestCase):
         self.assertEqual(first["report_sha256"], second["report_sha256"])
         self.assertFalse(any(value in payload for value in PRIVATE_SENTINELS))
         self.assertNotIn(directory, payload)
+
+    def test_reference_comparison_is_deterministic_and_hash_only(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = build_reference_comparison(root / "first")
+            second = build_reference_comparison(root / "second")
+            payload = (root / "first" / "comparison.json").read_text()
+        self.assertTrue(first["all_passed"])
+        self.assertEqual(0, first["network_attempts"])
+        self.assertEqual(0, first["private_sources_opened"])
+        self.assertEqual(first["report_sha256"], second["report_sha256"])
+        self.assertFalse(any(value in payload for value in PRIVATE_SENTINELS))
+        self.assertNotIn(directory, payload)
+
+    def test_reference_adapter_emits_valid_units_without_using_census(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build_all(root / "fixtures")
+            with mock.patch(
+                "extractcheck.census.census_file",
+                side_effect=AssertionError("adapter called the grading census"),
+            ):
+                units = extract_reference(
+                    root / "fixtures/synthetic.xlsx",
+                    run_id="reference-test",
+                    sample_id="SYN-XLSX",
+                )
+        self.assertGreater(len(units), 0)
+        self.assertTrue(all(validate_unit(unit) is None for unit in units))
+
+    def test_reference_adapter_refuses_traversing_ooxml_members(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "unsafe.xlsx"
+            with zipfile.ZipFile(path, "w") as archive:
+                archive.writestr("../escape.xml", "unsafe")
+                archive.writestr("xl/workbook.xml", "<workbook/>")
+            with self.assertRaises(SafetyViolation):
+                extract_reference(path, run_id="reference-test", sample_id="SYN-XLSX")
 
     def test_census_refuses_a_source_symlink(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
