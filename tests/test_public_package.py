@@ -14,7 +14,7 @@ from extractcheck.compare import build_reference_comparison
 from extractcheck.contracts import ContractError, validate_unit
 from extractcheck.evaluate import PRIVATE_SENTINELS, build_synthetic_report
 from extractcheck.fixtures import build_all
-from extractcheck.resources import ResourceSample
+from extractcheck.resources import ResourceSample, sample_resources
 from extractcheck.reference_adapter import extract_reference
 from extractcheck.runner import RunBudget, RunController, WorkerResult
 from extractcheck.safety import SafetyViolation, deny_python_network
@@ -142,6 +142,17 @@ class PublicPackageTests(unittest.TestCase):
             with self.assertRaises(SafetyViolation):
                 socket.getaddrinfo("example.invalid", 443)
         self.assertEqual(["resolve:str"], attempts)
+
+    def test_windows_resource_sampling_reports_unsupported_metrics(self) -> None:
+        with mock.patch("extractcheck.resources.sys.platform", "win32"):
+            result = sample_resources()
+        self.assertIsNone(result.rss_bytes)
+        self.assertIsNone(result.free_memory_ratio)
+        self.assertFalse(result.supported)
+        self.assertEqual(
+            ("rss_unsupported", "free_memory_ratio_unsupported"),
+            result.unsupported_codes,
+        )
 
     def test_contract_requires_typed_cell_locator(self) -> None:
         unit = {

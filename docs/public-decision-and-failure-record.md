@@ -30,13 +30,13 @@ The release gate ran the following checks from this repository candidate:
 
 | Check | Decision evidence |
 | --- | --- |
-| Unit suite | 12/12 passed under Python 3.11 |
+| Unit suite | 13/13 passed under Python 3.11 |
 | Compilation | Passed for `src`, `tests` and `tools` |
 | Release audit | Passed with 31 files and zero violations |
 | Synthetic proof | XLSX, PPTX, PDF and DOCX passed with zero network attempts |
 | Determinism | Two reports matched byte for byte |
 | Reference comparison | Four formats passed against the independent census with zero network attempts |
-| Clean copy | Release copy passed audit, compilation, 12/12 tests and both synthetic commands |
+| Clean copy | Release copy passed audit, compilation, 13/13 tests and both synthetic commands |
 | Packaging | Wheel built without build isolation or dependency acquisition |
 | CLI smoke test | No-index, no-deps install passed two identical CLI reports |
 
@@ -75,6 +75,9 @@ corpus-derived hashes.
 - The first public release described the adapter contract but gave contributors
   no working adapter. Version 0.2 adds a small reference implementation and
   scores it with the separate census.
+- The resource sampler imported a Unix-only module before Windows could report
+  that its process metrics were unsupported. The import is now optional, and a
+  regression test checks the explicit Windows result.
 
 ## Known limitations
 
