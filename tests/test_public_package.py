@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import socket
 import tempfile
@@ -190,7 +191,9 @@ class PublicPackageTests(unittest.TestCase):
             self.assertEqual(2, result["attempts"]["SYN-001"])
             self.assertTrue((root / "runs/synthetic-run/items/SYN-001/attempt-1/partial.json").exists())
             self.assertTrue((root / "runs/synthetic-run/items/SYN-001/attempt-2/result.json").exists())
-            self.assertEqual(0o700, (root / "runs/synthetic-run/items/SYN-001").stat().st_mode & 0o777)
+            if os.name == "posix":
+                mode = (root / "runs/synthetic-run/items/SYN-001").stat().st_mode
+                self.assertEqual(0o700, mode & 0o777)
 
     def test_run_control_manifest_rejects_private_keys(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

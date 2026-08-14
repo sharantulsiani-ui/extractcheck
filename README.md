@@ -61,9 +61,10 @@ an index or graph.
 | Word | paragraphs, tables and document structure |
 
 ExtractCheck also checks source identity, output confinement, deterministic
-reports, Python network attempts and resource limits. Its controller keeps
-outputs owner-only, accepts opaque manifest fields and requires an explicit
-resume after a crash.
+reports, Python network attempts and resource limits. Its controller accepts
+opaque manifest fields and requires an explicit resume after a crash. On POSIX
+systems it sets owner-only output modes. On Windows, use an output folder whose
+ACL already limits access to your account.
 
 ## Why I built it
 

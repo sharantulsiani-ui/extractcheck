@@ -16,7 +16,8 @@ for each revision remains external evidence in GitHub Actions.
 - Keep the runtime dependency-free and generate all proof documents locally.
 - Keep the source census hash-only and structure-only. Do not persist fixture
   text, cell values, chart values or formula expressions in the report.
-- Keep source checks read only, outputs confined and owner-only.
+- Keep source checks read only and outputs confined. Set owner-only modes on
+  POSIX systems; require a caller-supplied private ACL on Windows.
 - Keep the public scope to deterministic synthetic evidence. Do not publish a
   private corpus score or adapter result.
 - Include one dependency-free reference adapter to show the public contract.
@@ -80,6 +81,8 @@ corpus-derived hashes.
   regression test checks the explicit Windows result.
 - Windows rejected `fsync` on a read-only handle. Atomic JSON writers now reopen
   the completed temporary file in read/write mode before syncing it to disk.
+- Windows does not enforce POSIX `0700` modes. The test now checks that mode only
+  on POSIX systems, and the public boundary requires a private Windows ACL.
 
 ## Known limitations
 
