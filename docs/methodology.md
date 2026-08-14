@@ -22,12 +22,23 @@ structures survived, with what locator and identity evidence?”
 7. **Retrieval gate:** only after extraction passes, test real questions and
    source-evidence round-trips.
 
+## Reference adapter
+
+The bundled reference adapter exists to make the contract runnable. It reads
+only generated fixtures, emits typed structural units and retains no source
+text or cell values. The comparison command scores those units with the
+independent census.
+
+The adapter and census use separate code paths. This reduces one obvious form
+of self-grading, but it does not make the synthetic result independent research
+or prove parser quality on another corpus.
+
 ## Why hashes
 
-A private corpus cannot usually be published as a benchmark. Hashing allows a
-local evaluator to compare exact normalized values without retaining those
-values in the durable scoring record. Hashes do not anonymize low-entropy data;
-keep them private when they were derived from private content.
+A private collection cannot usually become a public benchmark. Hashes let a
+local evaluator compare exact values without saving those values in the report.
+But common values can be guessed from their hashes. Keep every hash made from
+private content private.
 
 The public synthetic report contains only hashes of generated fixtures. A
 private deployment should keep every corpus-derived hash in an ignored,
@@ -45,8 +56,8 @@ Use the source structure as the denominator:
 - PDF text recall: native source blocks on the correct page;
 - provenance: units with a locator that round-trips to source structure.
 
-Report weighted and per-item results separately. File-level macro averages can
-hide failure in high-cardinality documents.
+Report weighted and per-item results separately. A file-level average can hide
+failure in a document that contains many records.
 
 ## Determinism
 

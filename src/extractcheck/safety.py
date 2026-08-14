@@ -61,7 +61,7 @@ def atomic_json(path: Path, payload: dict[str, Any]) -> None:
         encoding="utf-8",
     )
     os.chmod(temporary, 0o600)
-    with temporary.open("rb") as handle:
+    with temporary.open("r+b") as handle:
         os.fsync(handle.fileno())
     os.replace(temporary, path)
     os.chmod(path, 0o600)
@@ -79,7 +79,7 @@ def replace_json(path: Path, payload: dict[str, Any]) -> None:
         encoding="utf-8",
     )
     os.chmod(temporary, 0o600)
-    with temporary.open("rb") as handle:
+    with temporary.open("r+b") as handle:
         os.fsync(handle.fileno())
     os.replace(temporary, path)
     os.chmod(path, 0o600)

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "extractcheck"
-version = "0.1.0"
+version = "0.2.0"
 description = "An offline benchmark for testing document extraction across PDF, PowerPoint and Excel, with exact source provenance"
 readme = "README.md"
 requires-python = ">=3.11"

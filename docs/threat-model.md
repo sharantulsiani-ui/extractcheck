@@ -28,6 +28,7 @@
 - denial of service by a hung in-process worker;
 - cryptographic authentication against an attacker who can rewrite all files;
 - complete safe parsing of adversarial Office/PDF documents.
+- creation or repair of private Windows directory ACLs.
 
 Use a process supervisor plus an OS sandbox, firewall/network namespace,
 container, or VM when those threats matter.

@@ -2,7 +2,13 @@ name: ci
 
 on:
   push:
+    branches: [main]
+    tags: ["v*"]
   pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -10,27 +16,41 @@ permissions:
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
-    runs-on: ubuntu-latest
+        include:
+          - os: ubuntu-latest
+            python-version: "3.11"
+          - os: ubuntu-latest
+            python-version: "3.12"
+          - os: ubuntu-latest
+            python-version: "3.13"
+          - os: macos-latest
+            python-version: "3.11"
+          - os: macos-latest
+            python-version: "3.13"
+          - os: windows-latest
+            python-version: "3.11"
+          - os: windows-latest
+            python-version: "3.13"
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONPATH: src
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Unit tests
-        run: PYTHONPATH=src python -m unittest discover -s tests -v
+        run: python -m unittest discover -s tests -v
       - name: Synthetic proof
-        run: PYTHONPATH=src python -m extractcheck.cli synthetic --output /tmp/extractcheck-example
+        run: python -m extractcheck.cli synthetic --output .ci-synthetic-output
+      - name: Reference comparison
+        run: python -m extractcheck.cli compare --output .ci-comparison-output
       - name: Public candidate audit
-        shell: bash
         run: |
-          audit_root="$RUNNER_TEMP/extractcheck-release"
-          audit_tar="$RUNNER_TEMP/extractcheck-release.tar"
-          mkdir -p "$audit_root"
-          git archive --format=tar --output="$audit_tar" HEAD
-          tar -xf "$audit_tar" -C "$audit_root"
-          PYTHONPATH="$audit_root/src" python "$audit_root/tools/audit_release.py" \
-            --release --root "$audit_root"
+          git archive --format=tar --output=.ci-release.tar HEAD
+          python -m tarfile -e .ci-release.tar .ci-release
+          python tools/audit_release.py --release --root .ci-release
       - name: Compile
         run: python -m compileall -q src tests tools

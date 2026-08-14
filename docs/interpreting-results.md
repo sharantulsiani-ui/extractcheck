@@ -2,10 +2,9 @@
 
 ## A parser can win one dimension and lose another
 
-A flattened extractor may have high value recall and zero exact cell
-provenance. A layout parser may improve reading order while dropping table
-cells during normalization. Choose per-format capabilities; avoid a single
-unqualified “winner.”
+A flat-text extractor may recover many values but lose every cell address. A
+layout parser may improve reading order while dropping table cells. Judge each
+format on its own. Do not name one winner without qualifications.
 
 ## Value presence is not structure recovery
 
@@ -18,9 +17,9 @@ Score these separately.
 
 ## Empty is ambiguous
 
-An empty parser output can mean an empty source, unsupported structure,
-encrypted content, image-only content, malformed input, missing dependency, or
-an extraction failure. The evaluator should retain the distinction.
+An empty parser output has several possible causes. The source may be empty,
+encrypted, malformed or made only of images. The parser may not support the
+structure, may lack a dependency or may have failed. Keep those cases separate.
 
 ## Combined systems need a merge contract
 

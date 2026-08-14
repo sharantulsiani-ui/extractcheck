@@ -4,8 +4,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 import os
 from pathlib import Path
-import resource
 import sys
+
+try:
+    import resource as _resource
+except ModuleNotFoundError:  # Windows does not provide the Unix resource module.
+    _resource = None
 
 
 @dataclass(frozen=True)
@@ -42,8 +46,8 @@ def _free_ratio() -> float | None:
 def sample_resources() -> ResourceSample:
     if sys.platform.startswith("linux"):
         rss = _linux_rss()
-    elif sys.platform == "darwin":
-        rss = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+    elif sys.platform == "darwin" and _resource is not None:
+        rss = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)
     else:
         rss = None
     ratio = _free_ratio()

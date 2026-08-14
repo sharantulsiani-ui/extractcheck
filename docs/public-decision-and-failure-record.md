@@ -2,11 +2,12 @@
 
 ## Release decision
 
-The synthetic-only Apache-2.0 repository is public. The local release gate
-passed before publication, private vulnerability reporting is enabled, and
-this revision repairs the first remote CI failure.
+The synthetic-only Apache-2.0 repository is public. Its release gate passed
+before publication, private vulnerability reporting is enabled, and remote CI
+has passed on the published 0.1 line.
 
-No green remote CI result is claimed until this exact revision passes.
+Version 0.2 adds a reference adapter and comparison command. A fresh CI result
+for each revision remains external evidence in GitHub Actions.
 
 ## Decisions
 
@@ -15,9 +16,13 @@ No green remote CI result is claimed until this exact revision passes.
 - Keep the runtime dependency-free and generate all proof documents locally.
 - Keep the source census hash-only and structure-only. Do not persist fixture
   text, cell values, chart values or formula expressions in the report.
-- Keep source checks read only, outputs confined and owner-only.
+- Keep source checks read only and outputs confined. Set owner-only modes on
+  POSIX systems; require a caller-supplied private ACL on Windows.
 - Keep the public scope to deterministic synthetic evidence. Do not publish a
   private corpus score or adapter result.
+- Include one dependency-free reference adapter to show the public contract.
+  Keep its code path separate from the grading census and make no parser-quality
+  claim from its synthetic result.
 - Use Apache-2.0 with matching package metadata, license and notice.
 
 ## Local verification record
@@ -26,12 +31,13 @@ The release gate ran the following checks from this repository candidate:
 
 | Check | Decision evidence |
 | --- | --- |
-| Unit suite | 9/9 passed under Python 3.11 |
+| Unit suite | 13/13 passed under Python 3.11 |
 | Compilation | Passed for `src`, `tests` and `tools` |
-| Release audit | Passed with 24 files and zero violations |
+| Release audit | Passed with 31 files and zero violations |
 | Synthetic proof | XLSX, PPTX, PDF and DOCX passed with zero network attempts |
 | Determinism | Two reports matched byte for byte |
-| Clean copy | 24-file copy passed audit, compilation, 9/9 tests and synthetic proof |
+| Reference comparison | Four formats passed against the independent census with zero network attempts |
+| Clean copy | Release copy passed audit, compilation, 13/13 tests and both synthetic commands |
 | Packaging | Wheel built without build isolation or dependency acquisition |
 | CLI smoke test | No-index, no-deps install passed two identical CLI reports |
 
@@ -48,6 +54,8 @@ corpus-derived hashes.
   closed.
 - Typed locators distinguish spreadsheet cells, presentation shapes and PDF
   pages or blocks.
+- The reference adapter gives contributors a working normalized-unit example
+  without adding a parser dependency.
 - The runner preserves interrupted attempts and requires explicit resume.
 - Public audit rules reject unexpected roots, private-looking fields, binary
   artifacts and oversized files.
@@ -65,6 +73,16 @@ corpus-derived hashes.
   Git checkout itself. The fail-closed audit correctly rejected `.git`. CI now
   audits a clean `git archive` of the exact commit, so the audit remains strict
   and evaluates only files distributed by the repository.
+- The first public release described the adapter contract but gave contributors
+  no working adapter. Version 0.2 adds a small reference implementation and
+  scores it with the separate census.
+- The resource sampler imported a Unix-only module before Windows could report
+  that its process metrics were unsupported. The import is now optional, and a
+  regression test checks the explicit Windows result.
+- Windows rejected `fsync` on a read-only handle. Atomic JSON writers now reopen
+  the completed temporary file in read/write mode before syncing it to disk.
+- Windows does not enforce POSIX `0700` modes. The test now checks that mode only
+  on POSIX systems, and the public boundary requires a private Windows ACL.
 
 ## Known limitations
 
@@ -73,5 +91,7 @@ corpus-derived hashes.
 - The PDF implementation counts page objects. It is not a layout or text
   parser.
 - Synthetic proof does not establish parser quality on another corpus.
+- The reference adapter is a contract example, not a production parser or a
+  benchmark winner.
 - Remote CI and fresh-clone checks remain external evidence. Their current
   status belongs in GitHub Actions, not in a timeless local claim.

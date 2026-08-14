@@ -11,7 +11,8 @@ document and third-party parser as untrusted.
 - Source size, identity, and SHA-256 are checked before and after inspection.
 - OOXML member count, expanded size, individual XML size, encryption, and path
   traversal are bounded or rejected.
-- Outputs are owner-only and confined below an explicit output root.
+- Outputs are confined below an explicit output root. POSIX output modes are
+  owner-only. On Windows, the caller must supply a folder with a private ACL.
 - Controller manifests accept only opaque allowlisted fields.
 - Common Python DNS and socket entry points can be blocked and recorded.
 
@@ -29,4 +30,4 @@ Run third-party parsers in a separately supervised process.
 Do not attach private documents, extracted text, source paths, email metadata,
 or runtime evidence to a public issue. Use GitHub's private vulnerability
 reporting with a minimal synthetic reproducer. Private reporting must be enabled
-before publication.
+before publication. Private reporting is enabled for this repository.

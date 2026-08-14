@@ -10,8 +10,8 @@ import sys
 
 
 ROOT_FILES = {
-    ".gitignore", "CONTRIBUTING.md", "LICENSE", "NOTICE.md", "README.md", "SECURITY.md",
-    "pyproject.toml",
+    ".gitignore", "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "LICENSE", "NOTICE.md",
+    "README.md", "SECURITY.md", "pyproject.toml",
 }
 ROOT_DIRS = {".github", "docs", "src", "tests", "tools"}
 GENERATED_ROOTS = {".pytest_cache", ".venv", "build", "dist"}
