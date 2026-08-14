@@ -78,6 +78,8 @@ corpus-derived hashes.
 - The resource sampler imported a Unix-only module before Windows could report
   that its process metrics were unsupported. The import is now optional, and a
   regression test checks the explicit Windows result.
+- Windows rejected `fsync` on a read-only handle. Atomic JSON writers now reopen
+  the completed temporary file in read/write mode before syncing it to disk.
 
 ## Known limitations
 
